@@ -105,14 +105,15 @@ class Admin extends User
     private function tabulateEvent($event)
     {
         require_once 'Team.php';
-        require_once 'Duo.php';
+        require_once 'Event.php';
 
         // initialize $result
         $result = [
-            'technicals' => [],
-            'judges'     => [],
-            'teams'      => [],
-            'winners'    => []
+            'technicals'      => [],
+            'judges'          => [],
+            'teams'           => [],
+            'winners'         => [],
+            'teams_with_ties' => []
         ];
 
         // get all teams
@@ -161,8 +162,8 @@ class Admin extends User
                 $result['technicals'][$key_technical] = $technical->toArray();
                 $result['technicals'][$key_technical]['online']  = $technical->isOnline();
                 $result['technicals'][$key_technical]['calling'] = $technical->isCalling();
-                $active_duo = Duo::findBySlug($technical->getActivePortion());
-                $result['technicals'][$key_technical]['active_portion_title'] = $active_duo ? $active_duo->getTitle() : null;
+                $active_event = Event::findBySlug($technical->getActivePortion());
+                $result['technicals'][$key_technical]['active_portion_title'] = $active_event ? $active_event->getTitle() : null;
                 $active_team = $result['technicals'][$key_technical]['online'] ? $technical->getActiveTeamInEvent($event) : false;
                 $result['technicals'][$key_technical]['active_team_id'] = $active_team ? $active_team->getId() : null;
 
@@ -205,8 +206,8 @@ class Admin extends User
                 $result['judges'][$key_judge] = $judge->toArray();
                 $result['judges'][$key_judge]['online']  = $judge->isOnline();
                 $result['judges'][$key_judge]['calling'] = $judge->isCalling();
-                $active_duo = Duo::findBySlug($judge->getActivePortion());
-                $result['judges'][$key_judge]['active_portion_title'] = $active_duo ? $active_duo->getTitle() : null;
+                $active_event = Event::findBySlug($judge->getActivePortion());
+                $result['judges'][$key_judge]['active_portion_title'] = $active_event ? $active_event->getTitle() : null;
                 $active_team = $result['judges'][$key_judge]['online'] ? $judge->getActiveTeamInEvent($event) : false;
                 $result['judges'][$key_judge]['active_team_id'] = $active_team ? $active_team->getId() : null;
 
@@ -276,6 +277,15 @@ class Admin extends User
             if(!isset($rank_group[$key_rank]))
                 $rank_group[$key_rank] = [];
             $rank_group[$key_rank][] = $key;
+        }
+
+        // get teams with ties
+        foreach($rank_group as $key_rank => $team_keys) {
+            if (sizeof($team_keys) > 1) {
+                foreach ($team_keys as $team_key) {
+                    $result['teams_with_ties'][] = $team_key;
+                }
+            }
         }
 
         // get initial fractional rank
@@ -358,21 +368,76 @@ class Admin extends User
         sort($unique_final_fractional_ranks);
 
         // determine winners (case-to-case basis depending on organizer's guidelines)
-        $i = 0;
-        foreach($event->getAllTitles() as $key_title => $title) {
-            // update title of $unique_final_fractional_ranks[$i]'th team
-            foreach($result['teams'] as $key_team => $arr_team) {
-                if($arr_team['rank']['final']['fractional'] == $unique_final_fractional_ranks[$i]) {
-                    $t = trim($title->getTitle());
-                    $result['teams'][$key_team]['title'] = $t;
-                    if($t != '')
-                        $result['winners'][$key_team] = $t;
+        if($event->getSlug() === 'final-qa') {
+            // get titles excluding blank ones
+            $event_titles = [];
+            foreach($event->getAllTitles() as $key_title => $title) {
+                if(trim($title->getTitle()) !== '')
+                    $event_titles[$key_title] = $title;
+            }
+
+            // Miss Bato
+            foreach($event_titles as $key_title => $title) {
+                if($title->getRank() == 1) {
+                    $filled = false;
+                    for($j=0; $j<sizeof($unique_final_fractional_ranks); $j++) {
+                        foreach($result['teams'] as $key_team => $arr_team) {
+                            if(!isset($result['winners'][$key_team])) {
+                                if($arr_team['rank']['final']['fractional'] == $unique_final_fractional_ranks[$j]) {
+                                    if($arr_team['is_native'] == 1) {
+                                        $t = trim($title->getTitle());
+                                        $result['teams'][$key_team]['title'] = $t;
+                                        $result['winners'][$key_team] = $t;
+                                        $filled = true;
+                                    }
+                                }
+                            }
+                        }
+                        if($filled)
+                            break;
+                    }
+                    break;
                 }
             }
 
-            $i += 1;
-            if($i >= sizeof($unique_final_fractional_ranks))
-                break;
+            // Other titles
+            foreach($event_titles as $key_title => $title) {
+                if(!in_array($title->getRank(), [1])) {
+                    $filled = false;
+                    for($j=0; $j<sizeof($unique_final_fractional_ranks); $j++) {
+                        foreach ($result['teams'] as $key_team => $arr_team) {
+                            if(!isset($result['winners'][$key_team])) {
+                                if($arr_team['rank']['final']['fractional'] == $unique_final_fractional_ranks[$j]) {
+                                    $t = trim($title->getTitle());
+                                    $result['teams'][$key_team]['title'] = $t;
+                                    $result['winners'][$key_team] = $t;
+                                    $filled = true;
+                                }
+                            }
+                        }
+                        if($filled)
+                            break;
+                    }
+                }
+            }
+        }
+        else {
+            $i = 0;
+            foreach($event->getAllTitles() as $key_title => $title) {
+                // update title of $unique_final_fractional_ranks[$i]'th team
+                foreach($result['teams'] as $key_team => $arr_team) {
+                    if($arr_team['rank']['final']['fractional'] == $unique_final_fractional_ranks[$i]) {
+                        $t = trim($title->getTitle());
+                        $result['teams'][$key_team]['title'] = $t;
+                        if($t != '')
+                            $result['winners'][$key_team] = $t;
+                    }
+                }
+
+                $i += 1;
+                if($i >= sizeof($unique_final_fractional_ranks))
+                    break;
+            }
         }
 
         // return $result

@@ -5,7 +5,8 @@ input[type=number]::-webkit-outer-spin-button {
     margin: 0;
 }
 
-input[type=number] {
+input[type=number],
+.v-input.text-center input {
     text-align: center !important;
 }
 
@@ -81,10 +82,6 @@ body {
     font-family: 'Roboto', sans-serif;
 }
 
-input[type="number"] {
-    font-size: 1.1rem !important;
-}
-
 /******************* Base Styles for Screensaver *******************/
 
 /* Screensaver */
@@ -132,13 +129,13 @@ html::-webkit-scrollbar {
 /* Swap-colors Animations */
 @keyframes swap-colors {
     0% {
-        background-color: #fff;
+        background-color: #1a1a1a; /* dark gray */
     }
     50% {
-        background-color: #6a6eff;
+        background-color: #2a2a7a; /* dark blue */
     }
     100% {
-        background-color: #fff;
+        background-color: #1a1a1a; /* dark gray */
     }
 }
 
@@ -191,12 +188,5 @@ html::-webkit-scrollbar {
     /* Image height set for extra-large devices */
     div#screensaver img {
         height: 30rem;
-    }
-}
-
-
-@media only screen and (max-width: 1280px)  {
-    html {
-        overflow-y: auto;
     }
 }

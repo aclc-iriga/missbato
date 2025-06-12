@@ -3,8 +3,17 @@ require_once '_init.php';
 
 // get requests
 if(isset($_GET['getUser'])) {
+    // get config values
+    $websocket_url = '';
+    if(file_exists('config/websocket.php')) {
+        require_once 'config/websocket.php';
+        if (isset($websocket))
+            $websocket_url = $websocket['url'];
+    }
+
     echo json_encode([
-        'user' => getUser()
+        'user'          => getUser(),
+        'websocket_url' => $websocket_url
     ]);
 
     exit;
@@ -57,16 +66,18 @@ else if(isset($_POST['signOut'])) {
 }
 
 
+
 $routes = [
-    [ "name" => "Tabulation"      , "route" => "/missbato"             ],
-    [ "name" => "CRUD"            , "route" => "crud/competitions.php" ],
-    [ "name" => "User Assignments", "route" => "crud/assignment"       ],
-    [ "name" => "Minor Awards"    , "route" => "crud/minor-awards"     ],
-    [ "name" => "Eliminations"    , "route" => "crud/eliminations"     ],
-    [ "name" => "Arrangements"    , "route" => "crud/orders"           ],
-    [ "name" => "Titles"          , "route" => "crud/titles"           ],
-    [ "name" => "Rating Sheets"   , "route" => "papers/rating-sheets"  ],
-    [ "name" => "Top 10"          , "route" => "results/top10"         ],
+    [ "name" => "Tabulation"            , "route" => "/missbato"             ],
+    [ "name" => "CRUD"                  , "route" => "crud/competitions.php" ],
+    [ "name" => "User Assignments"      , "route" => "crud/assignment"       ],
+    [ "name" => "Eliminations"          , "route" => "crud/eliminations"     ],
+    [ "name" => "Arrangements"          , "route" => "crud/orders"           ],
+    [ "name" => "Titles"                , "route" => "crud/titles"           ],
+    [ "name" => "Rating Sheets"         , "route" => "papers/rating-sheets"  ],
+    [ "name" => "Top 10 (NORMAL)"       , "route" => "results/top10-normal"  ],
+    [ "name" => "Top 10 (RANKED)"       , "route" => "results/top10-ranked"  ],
+    [ "name" => "Bullet Train Dashboard", "route" => "dashboard"             ]
 ];
 ?>
 <!DOCTYPE html>
@@ -132,6 +143,5 @@ $routes = [
             </div>
         </div>
     </div>
-
 </body>
 </html>

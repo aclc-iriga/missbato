@@ -7,11 +7,6 @@
 		<h3 v-if="$vuetify.display.lgAndUp" id="topnav">{{ $store.getters.appName }}</h3>
 		<h4 v-else-if="$vuetify.display.mdAndDown" id="topnav">{{ $store.getters.appName }}</h4>
 
-        <v-spacer/>
-
-        <!-- horizontal menu -->
-        <h-menu v-if="$vuetify.display.lgAndUp && showHMenu"/>
-
 		<template v-if="$store.getters['auth/getUser'] !== null">
             <v-spacer/>
 
@@ -24,7 +19,6 @@
                 :color="askingForHelp ? 'warning' : 'grey'"
                 :disabled="helpDisabled"
                 @click="toggleHelp"
-                width="165"
             >
                 <template v-if="askingForHelp">
                     <v-progress-circular
@@ -132,19 +126,9 @@
 
 <script>
     import $ from "jquery";
-    import HMenu from './HMenu.vue';
 
     export default {
         name: "TopNav",
-        components: {
-            HMenu
-        },
-        props: {
-            showHMenu: {
-                type: Boolean,
-                default: true
-            }
-        },
         data() {
             return {
                 dialog: false,
@@ -180,6 +164,9 @@
                         signOut: this.signedOut
                     },
                     success: (data) => {
+                        // emit sign out event
+                        this.$emit('sign-out');
+
                         data = JSON.parse(data);
                         this.$store.commit('auth/setUser', data.user = null);
                         this.$router.push('/');
@@ -189,7 +176,7 @@
                         alert(`ERROR ${error.status}: ${error.statusText}`);
                         this.signingOut = false;
                     },
-                })
+                });
             },
 
             toggleHelp() {
@@ -220,6 +207,9 @@
                         user.calling = !user.calling;
                     },
                 });
+
+                // emit help status
+                this.$emit('toggle-help', user.calling);
             }
         },
         mounted() {

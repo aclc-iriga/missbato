@@ -21,8 +21,8 @@ else {
         // ping technical
         if(isset($_POST['ping'])) {
             $technical->ping();
-            if(isset($_POST['duoSlug']))
-                $technical->setActivePortion($_POST['duoSlug']);
+            if(isset($_POST['eventSlug']))
+                $technical->setActivePortion($_POST['eventSlug']);
 
             echo json_encode([
                 'pinged'  => true,
@@ -41,11 +41,11 @@ else {
 
         // get events assigned to technical
         else if(isset($_GET['getEvents'])) {
-            require_once 'models/Duo.php';
+            require_once 'models/Category.php';
 
             echo json_encode([
-                'duos'   => Duo::rows(),
-                'events' => $technical->getRowEvents()
+                'categories' => Category::rows(),
+                'events'     => $technical->getRowEvents()
             ]);
         }
 
@@ -55,8 +55,7 @@ else {
 
             $event_slug = trim($_GET['getDeductionSheet']);
             $event = Event::findBySlug($event_slug);
-            if(isset($_GET['duoSlug']))
-                $technical->setActivePortion($_GET['duoSlug']);
+            $technical->setActivePortion($event_slug);
 
             echo json_encode([
                 'event'      => $event->toArray(),

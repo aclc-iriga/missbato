@@ -51,7 +51,7 @@ require_once '../../models/Team.php';
                             <thead>
                             <tr>
                                 <th>#</th>
-                                <th><?php print_r($event_name); ?></th>
+                                <th class="text-uppercase text-danger"><?= $event_name ?></th>
                                 <th>Action</th>
                             </tr>
                             </thead>
@@ -62,7 +62,7 @@ require_once '../../models/Team.php';
                                 $team_name = $team->getName();
                                 $team_id = $team->getId();
                                 $team_number = $team->getNumber();
-                                $team_location = $team->getLocation();
+                                $team_location = ($team->isNative() ? '*' : '') . $team->getLocation();
                                 $team_avatar = $team->getAvatar();
                                 ?>
                                 <tr
@@ -81,7 +81,7 @@ require_once '../../models/Team.php';
                                             </div>
                                             <div class="ms-3 text-start">
                                                <p class="m-0 card-header fw-bold" style="line-height: 1.1;"><?= $team_name ?></p>
-                                               <small class="m-0" style="font-size: 12px"><?= $team_location ?></small>
+                                               <b class="m-0 opacity-75" style="font-size: 12px"><?= $team_location ?></b>
                                            </div>
                                         </div>
                                     </td>

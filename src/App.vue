@@ -62,7 +62,7 @@
                         },
                         data: {
                             ping: true,
-                            duoSlug: this.$route.params.duoSlug ? this.$route.params.duoSlug : null
+                            eventSlug: this.$route.params.eventSlug ? this.$route.params.eventSlug : null
                         },
                         success: (data) => {
                             data = JSON.parse(data);
@@ -112,6 +112,9 @@
                         this.$router.replace({
                             name: data.user.userType
                         });
+                    }
+                    if (data.websocket_url) {
+                        this.$store.commit('websocketUrl', data.websocket_url);
                     }
                     setTimeout(() => {
                         this.loading = false;
