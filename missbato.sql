@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 12, 2025 at 09:09 PM
+-- Generation Time: Jun 13, 2025 at 02:54 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -403,7 +403,7 @@ INSERT INTO `teams` (`id`, `number`, `name`, `location`, `age`, `height`, `vital
 (5, 5, 'AALIYAH KRYSTELA DAVID', 'Bato, Cam. Sur', 18, '', '', 1, '05.jpg', '2025-06-12 16:04:33', '2025-06-12 16:04:33'),
 (6, 6, 'CYRISH HUGO', 'Bato, Cam. Sur', 19, '', '', 1, '06.jpg', '2025-06-12 16:04:33', '2025-06-12 16:04:33'),
 (7, 7, 'AGATHA KAYE OLAYON', 'Iriga City', 23, '', '', 0, '07.jpg', '2025-06-12 16:04:33', '2025-06-12 16:04:33'),
-(8, 8, 'MARIEL CHAVEZ', 'Nabua, Cam. Sur', 21, '', '', 0, '08.jpg', '2025-06-12 16:04:33', '2025-06-12 16:04:33'),
+(8, 8, 'MARIEL CHAVEZ', 'Bato, Cam. Sur', 21, '', '', 1, '08.jpg', '2025-06-12 16:04:33', '2025-06-13 00:54:42'),
 (9, 9, 'HANNA GRACE CLAVILLAS', 'Buhi, Cam. Sur', 20, '', '', 0, '09.jpg', '2025-06-12 16:04:33', '2025-06-12 16:04:33'),
 (10, 10, 'MARIFRANZ RICO', 'Goa, Cam. Sur', 21, '', '', 0, '10.jpg', '2025-06-12 16:04:33', '2025-06-12 16:04:33'),
 (11, 11, 'KAZZANDRA SETON', 'Siruma, Cam. Sur', 23, '', '', 0, '11.jpg', '2025-06-12 16:04:33', '2025-06-12 16:04:33'),
