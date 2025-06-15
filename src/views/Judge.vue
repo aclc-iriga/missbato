@@ -1505,6 +1505,7 @@
 
                             // event is found: route to that event
                             if (event) {
+                                hideScreenSaver();
                                 this.$router.push({ params: { eventSlug: event.slug } });
                             }
                             // event is not found: refresh to that event
@@ -1541,6 +1542,7 @@
 
                                 // event is found: route to that event
                                 if (event) {
+                                    hideScreenSaver();
                                     this.$router.push({ params: { eventSlug: event.slug } });
                                 }
                                 // event is not found: refresh to that event
