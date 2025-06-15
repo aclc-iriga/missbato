@@ -32,7 +32,7 @@
     $judges_assoc  = [];
     foreach ($judge_objects as $judge_object) {
         $judge_key = 'judge_' . $judge_object->getId();
-        $judges_assoc[$judge_key] = $judge_object->toArray();
+        $judges_assoc[$judge_key] = [ ...$judge_object->toArray(), 'visible' => true ];
 
         // judge events
         $judges_assoc[$judge_key]['events'] = [];
@@ -81,6 +81,7 @@
         <div class="col-12 col-sm-12 col-md-5 col-lg-4">
             <!-- Judges Table -->
             <judges-table
+                competition="<?= $competition ?>"
                 :judges="judges"
                 :events="events"
                 :judges-online="judges_online"
@@ -102,6 +103,7 @@
                 :key="event.id"
             >
                 <teams-table
+                    competition="<?= $competition ?>"
                     :teams="teams"
                     :event="event"
                     :judges="judges"
@@ -246,17 +248,25 @@
             /**
              * @method switchAllJudgeEvent
              * @description Switch all judges' event.
-             * @param event
+             * @param {Object} payload
              */
-            switchAllJudgeEvent(event) {
-                if (event) {
-                    if (confirm(`SWITCH active event of ALL JUDGES to "${event.title}"?`)) {
-                        this.websocketSend(
-                            '__switch_all_judge_event__',
-                            {
-                                event_slug: event.slug
-                            }
-                        );
+            switchAllJudgeEvent(payload) {
+                if ('event' in payload && 'judgeKeys' in payload) {
+                    const event     = payload.event;
+                    const judgeKeys = payload.judgeKeys;
+                    if (event && judgeKeys.length > 0) {
+                        if (confirm(`SWITCH active event of ALL VISIBLE JUDGES to "${event.title}"?`)) {
+                            this.websocketSend(
+                                '__switch_all_judge_event__',
+                                {
+                                    event_slug: event.slug,
+                                    judge_keys: judgeKeys
+                                }
+                            );
+                            setTimeout(() => {
+                                document.getElementById('btn-judges-dropdown-toggle').click();
+                            }, 1);
+                        }
                     }
                 }
             }
