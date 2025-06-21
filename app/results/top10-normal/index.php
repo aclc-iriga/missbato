@@ -336,10 +336,11 @@ foreach ($judges as $judge) {
                     <p class="team-meta mb-0" style="line-height: 1; opacity: 0.85"><small><?= $team['info']['meta'] ?></small></p>
                 </td>
 
-                <!-- averages -->
-                <?php for($i=0; $i<sizeof(EVENTS); $i++) { ?>
-                    <td colspan="2" class="pe-3" align="right"><span class="opacity-75"><?= number_format($team['inputs'][EVENTS[$i]['slug']]['average'], 3) ?></span></td>
-                    <td align="right" class="pe-3 br text-secondary fw-bold"><span class="opacity-75"><?= number_format($team['inputs'][EVENTS[$i]['slug']]['average_equiv'], 3) ?></span></td>
+                <!-- ranks -->
+                <?php for($i=0; $i<sizeof($events); $i++) { ?>
+                    <td align="right" class="pe-3 text-primary"><?= number_format($team['inputs'][EVENTS[$i]['slug']]['rank'], 2) ?></td>
+                    <td align="right" class="pe-3 text-primary"><span class="opacity-75"><?= number_format($team['inputs'][EVENTS[$i]['slug']]['rank_ave'], 2) ?></span></td>
+                    <td align="right" class="br pe-3 text-primary fw-bold"><span class="opacity-75"><?= number_format($team['inputs'][EVENTS[$i]['slug']]['rank_ave_equiv'], 2) ?></span></td>
                 <?php } ?>
 
                 <!-- total rank -->
@@ -358,10 +359,10 @@ foreach ($judges as $judge) {
             </tr>
 
             <tr<?= $team['title'] !== '' ? ' class="table-warning"' : '' ?>>
-                <?php for($i=0; $i<sizeof($events); $i++) { ?>
-                    <td align="right" class="bb pe-3 text-primary"><?= number_format($team['inputs'][EVENTS[$i]['slug']]['rank'], 2) ?></td>
-                    <td align="right" class="bb pe-3 text-primary"><span class="opacity-75"><?= number_format($team['inputs'][EVENTS[$i]['slug']]['rank_ave'], 2) ?></span></td>
-                    <td align="right" class="bb br pe-3 text-primary fw-bold"><span class="opacity-75"><?= number_format($team['inputs'][EVENTS[$i]['slug']]['rank_ave_equiv'], 2) ?></span></td>
+                <!-- averages -->
+                <?php for($i=0; $i<sizeof(EVENTS); $i++) { ?>
+                    <td colspan="2" class="bb pe-3" align="right"><span class="opacity-75"><?= number_format($team['inputs'][EVENTS[$i]['slug']]['average'], 3) ?></span></td>
+                    <td align="right" class="bb pe-3 br text-secondary fw-bold"><span class="opacity-75"><?= number_format($team['inputs'][EVENTS[$i]['slug']]['average_equiv'], 3) ?></span></td>
                 <?php } ?>
 
                 <!-- total average -->
